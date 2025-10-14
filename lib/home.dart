@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/LIST/list_barang.dart';
 import 'package:myapp/LIST/list_gunung.dart';
+import 'package:myapp/LIST/list_barang.dart';
+import 'package:myapp/LIST/list_berita.dart';
+import 'package:myapp/LIST/list_katalog.dart'; 
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +15,10 @@ class HomeScreen extends StatelessWidget {
         crossAxisCount: 2,
         children: <Widget>[
           _buildCard(context, 'Berita', Icons.article, () {
-
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ListBerita()),
+            );
           }),
           _buildCard(context, 'Gunung', Icons.landscape, () {
             Navigator.push(
@@ -27,7 +32,12 @@ class HomeScreen extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const ListBarang()),
             );
           }),
-          _buildCard(context, 'Katalog', Icons.shopping_bag_rounded, () {}),
+          _buildCard(context, 'Katalog', Icons.shopping_bag_rounded, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ListKatalog()), 
+            );
+          }),
         ],
       ),
     );

@@ -35,10 +35,10 @@ class MountainList extends StatelessWidget {
       try {
         return MemoryImage(base64Decode(base64String));
       } catch (e) {
-        return const AssetImage('assets/placeholder.png'); // Fallback image
+        return const AssetImage('assets/placeholder.png'); 
       }
     } else {
-      return const AssetImage('assets/placeholder.png'); // Fallback image
+      return const AssetImage('assets/placeholder.png'); 
     }
   }
 
@@ -111,7 +111,6 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
               final bytes = await pickedFile.readAsBytes();
               setState(() {
                 pickedImageBytes = bytes;
-                // When a new image is picked, we clear the old one
                 formData['image'] = null; 
               });
             }
@@ -188,7 +187,6 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                     if (pickedImageBytes != null) {
                       formData['image'] = base64Encode(pickedImageBytes!);
                     }
-                    
                     if (document == null) {
                       FirebaseFirestore.instance.collection('gunung').add(formData);
                     } else {
