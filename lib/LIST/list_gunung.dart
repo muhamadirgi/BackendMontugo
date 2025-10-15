@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -35,10 +34,10 @@ class MountainList extends StatelessWidget {
       try {
         return MemoryImage(base64Decode(base64String));
       } catch (e) {
-        return const AssetImage('assets/placeholder.png'); 
+        return const AssetImage('assets/placeholder.png');
       }
     } else {
-      return const AssetImage('assets/placeholder.png'); 
+      return const AssetImage('assets/placeholder.png');
     }
   }
 
@@ -58,27 +57,39 @@ class MountainList extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.all(8.0),
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+            Map<String, dynamic> data =
+                document.data()! as Map<String, dynamic>;
             return Card(
               elevation: 4.0,
               margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
                 leading: CircleAvatar(
                   backgroundImage: _getImageProvider(data['image']),
-                  child: (data['image'] == null || data['image'].isEmpty) && (data['nama'] != null && data['nama'].isNotEmpty)
+                  child:
+                      (data['image'] == null || data['image'].isEmpty) &&
+                          (data['nama'] != null && data['nama'].isNotEmpty)
                       ? Text(data['nama'][0])
                       : null,
                 ),
-                title: Text(data['nama'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(
+                  data['nama'] ?? '',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 subtitle: Text(data['lokasi'] ?? ''),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () => _showAddEditDialog(context, document: document),
+                      onPressed: () =>
+                          _showAddEditDialog(context, document: document),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
@@ -97,7 +108,9 @@ class MountainList extends StatelessWidget {
 
 void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
   final formKey = GlobalKey<FormState>();
-  Map<String, dynamic> formData = document != null ? document.data() as Map<String, dynamic> : {};
+  Map<String, dynamic> formData = document != null
+      ? document.data() as Map<String, dynamic>
+      : {};
   Uint8List? pickedImageBytes;
 
   showDialog(
@@ -106,24 +119,41 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
       return StatefulBuilder(
         builder: (context, setState) {
           Future<void> pickImage() async {
-            final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 50, maxWidth: 800);
+            final pickedFile = await ImagePicker().pickImage(
+              source: ImageSource.gallery,
+              imageQuality: 50,
+              maxWidth: 800,
+            );
             if (pickedFile != null) {
               final bytes = await pickedFile.readAsBytes();
               setState(() {
                 pickedImageBytes = bytes;
-                formData['image'] = null; 
+                formData['image'] = null;
               });
             }
           }
 
           Widget imagePreview() {
             if (pickedImageBytes != null) {
-              return Image.memory(pickedImageBytes!, fit: BoxFit.cover, width: double.infinity);
-            } else if (formData['image'] != null && formData['image'].isNotEmpty) {
-               try {
-                return Image.memory(base64Decode(formData['image']), fit: BoxFit.cover, width: double.infinity);
-              } catch(e) {
-                return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+              return Image.memory(
+                pickedImageBytes!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              );
+            } else if (formData['image'] != null &&
+                formData['image'].isNotEmpty) {
+              try {
+                return Image.memory(
+                  base64Decode(formData['image']),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                );
+              } catch (e) {
+                return const Icon(
+                  Icons.broken_image,
+                  size: 50,
+                  color: Colors.grey,
+                );
               }
             } else {
               return const Icon(Icons.photo, size: 50, color: Colors.grey);
@@ -145,7 +175,10 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           Container(
                             width: double.infinity,
                             height: 150,
-                            decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(12.0)),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
                             child: Center(child: imagePreview()),
                           ),
                           const SizedBox(height: 8),
@@ -158,26 +191,102 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                       ),
                       const SizedBox(height: 16),
                       ...[
-                        TextFormField(initialValue: formData['nama'] ?? '', decoration: const InputDecoration(labelText: 'Nama Gunung'), onSaved: (v) => formData['nama'] = v),
-                        TextFormField(initialValue: formData['deskripsi'] ?? '', decoration: const InputDecoration(labelText: 'Deskripsi'), onSaved: (v) => formData['deskripsi'] = v),
-                        TextFormField(initialValue: formData['jalur'] ?? '', decoration: const InputDecoration(labelText: 'Jalur'), onSaved: (v) => formData['jalur'] = v),
-                        TextFormField(initialValue: formData['kesulitan'] ?? '', decoration: const InputDecoration(labelText: 'Kesulitan'), onSaved: (v) => formData['kesulitan'] = v),
-                        TextFormField(initialValue: formData['ketinggian'] ?? '', decoration: const InputDecoration(labelText: 'Ketinggian'), onSaved: (v) => formData['ketinggian'] = v),
-                        TextFormField(initialValue: formData['lokasi'] ?? '', decoration: const InputDecoration(labelText: 'Lokasi'), onSaved: (v) => formData['lokasi'] = v),
-                        TextFormField(initialValue: formData['latitude']?.toString() ?? '', decoration: const InputDecoration(labelText: 'Latitude'), keyboardType: TextInputType.number, onSaved: (v) => formData['latitude'] = double.tryParse(v ?? '0')),
-                        TextFormField(initialValue: formData['longitude']?.toString() ?? '', decoration: const InputDecoration(labelText: 'Longitude'), keyboardType: TextInputType.number, onSaved: (v) => formData['longitude'] = double.tryParse(v ?? '0')),
-                        TextFormField(initialValue: formData['provinsi'] ?? '', decoration: const InputDecoration(labelText: 'Provinsi'), onSaved: (v) => formData['provinsi'] = v),
-                        TextFormField(initialValue: formData['status'] ?? '', decoration: const InputDecoration(labelText: 'Status'), onSaved: (v) => formData['status'] = v),
-                        TextFormField(initialValue: formData['tiket'] ?? '', decoration: const InputDecoration(labelText: 'Tiket'), onSaved: (v) => formData['tiket'] = v),
-                        TextFormField(initialValue: formData['waktu'] ?? '', decoration: const InputDecoration(labelText: 'Waktu'), onSaved: (v) => formData['waktu'] = v),
-                      ].map((widget) => Padding(padding: const EdgeInsets.symmetric(vertical: 8.0), child: widget)),
+                        TextFormField(
+                          initialValue: formData['nama'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Nama Gunung',
+                          ),
+                          onSaved: (v) => formData['nama'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['deskripsi'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Deskripsi',
+                          ),
+                          onSaved: (v) => formData['deskripsi'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['jalur'] ?? '',
+                          decoration: const InputDecoration(labelText: 'Jalur'),
+                          onSaved: (v) => formData['jalur'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['kesulitan'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Kesulitan',
+                          ),
+                          onSaved: (v) => formData['kesulitan'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['ketinggian'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Ketinggian',
+                          ),
+                          onSaved: (v) => formData['ketinggian'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['lokasi'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Lokasi',
+                          ),
+                          onSaved: (v) => formData['lokasi'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['latitude']?.toString() ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Latitude',
+                          ),
+                          onSaved: (v) =>
+                              formData['latitude'] = double.tryParse(v ?? '0'),
+                        ),
+                        TextFormField(
+                          initialValue: formData['longitude']?.toString() ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Longitude',
+                          ),
+                          onSaved: (v) =>
+                              formData['longitude'] = double.tryParse(v ?? '0'),
+                        ),
+                        TextFormField(
+                          initialValue: formData['provinsi'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Provinsi',
+                          ),
+                          onSaved: (v) => formData['provinsi'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['status'] ?? '',
+                          decoration: const InputDecoration(
+                            labelText: 'Status',
+                          ),
+                          onSaved: (v) => formData['status'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['tiket'] ?? '',
+                          decoration: const InputDecoration(labelText: 'Tiket'),
+                          onSaved: (v) => formData['tiket'] = v,
+                        ),
+                        TextFormField(
+                          initialValue: formData['waktu'] ?? '',
+                          decoration: const InputDecoration(labelText: 'Waktu'),
+                          onSaved: (v) => formData['waktu'] = v,
+                        ),
+                      ].map(
+                        (widget) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: widget,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
             actions: [
-              TextButton(child: const Text('Batal'), onPressed: () => Navigator.of(context).pop()),
+              TextButton(
+                child: const Text('Batal'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
               ElevatedButton.icon(
                 icon: const Icon(Icons.save),
                 label: const Text('Simpan'),
@@ -188,9 +297,14 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                       formData['image'] = base64Encode(pickedImageBytes!);
                     }
                     if (document == null) {
-                      FirebaseFirestore.instance.collection('gunung').add(formData);
+                      FirebaseFirestore.instance
+                          .collection('gunung')
+                          .add(formData);
                     } else {
-                      FirebaseFirestore.instance.collection('gunung').doc(document.id).update(formData);
+                      FirebaseFirestore.instance
+                          .collection('gunung')
+                          .doc(document.id)
+                          .update(formData);
                     }
                     Navigator.of(context).pop();
                   }
@@ -211,7 +325,10 @@ void _deleteMountain(BuildContext context, String docId) {
       title: const Text('Hapus Gunung'),
       content: const Text('Apakah Anda yakin ingin menghapus data gunung ini?'),
       actions: [
-        TextButton(child: const Text('Batal'), onPressed: () => Navigator.of(context).pop()),
+        TextButton(
+          child: const Text('Batal'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         TextButton(
           style: TextButton.styleFrom(foregroundColor: Colors.red),
           child: const Text('Hapus'),
