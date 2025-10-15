@@ -211,11 +211,15 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           onSaved: (v) => formData['kategori'] = v,
                         ),
                         TextFormField(
-                          initialValue: formData['harga']?.toInt() ?? '',
+                          // initialValue: formData['harga']?.toInt() ?? '',
+                          // decoration: const InputDecoration(labelText: 'Harga'),
+                          // keyboardType: TextInputType.number,
+                          // onSaved: (v) =>
+                          //     formData['harga'] = int.tryParse(v ?? '0'),
+                          initialValue: formData['harga'].toString(),
                           decoration: const InputDecoration(labelText: 'Harga'),
                           keyboardType: TextInputType.number,
-                          onSaved: (v) =>
-                              formData['harga'] = int.tryParse(v ?? '0'),
+                          onSaved: (v) => formData['harga'] = v,
                         ),
                         TextFormField(
                           initialValue: formData['deskripsi'] ?? '',
