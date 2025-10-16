@@ -163,7 +163,7 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
           }
 
           return AlertDialog(
-            title: Text(document == null ? 'Tambah Katalog' : 'Edit Katalog'),
+            title: Text(document ==  null ? 'Tambah Katalog' : 'Edit Katalog'),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               child: Form(
@@ -211,13 +211,9 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           onSaved: (v) => formData['kategori'] = v,
                         ),
                         TextFormField(
-                          // initialValue: formData['harga']?.toInt() ?? '',
-                          // decoration: const InputDecoration(labelText: 'Harga'),
-                          // keyboardType: TextInputType.number,
-                          // onSaved: (v) =>
-                          //     formData['harga'] = int.tryParse(v ?? '0'),
-                          initialValue: formData['harga'].toString(),
-                          decoration: const InputDecoration(labelText: 'Harga'),
+                          initialValue: formData['harga'] ?? '',
+                          decoration: const InputDecoration(labelText: 'Harga',
+                          ),
                           keyboardType: TextInputType.number,
                           onSaved: (v) => formData['harga'] = v,
                         ),
@@ -253,7 +249,6 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                     if (pickedImageBytes != null) {
                       formData['image'] = base64Encode(pickedImageBytes!);
                     }
-
                     if (document == null) {
                       FirebaseFirestore.instance
                           .collection('katalog')
