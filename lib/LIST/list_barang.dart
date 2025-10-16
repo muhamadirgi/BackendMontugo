@@ -196,6 +196,12 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           decoration: const InputDecoration(
                             labelText: 'Nama Barang',
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Nama barang tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['nama'] = v,
                         ),
                         TextFormField(
@@ -203,11 +209,23 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           decoration: const InputDecoration(
                             labelText: 'Kategori',
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Kategori tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['kategori'] = v,
                         ),
                         TextFormField(
                           initialValue: formData['berat'] ?? '',
                           decoration: const InputDecoration(labelText: 'Berat'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Berat tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['berat'] = v,
                         ),
                         DropdownButtonFormField<String>(
@@ -219,6 +237,12 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                                     value: label,
                                   ))
                               .toList(),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Pilih jenis barang';
+                            }
+                            return null;
+                          },
                           onChanged: (value) {
                             setState(() {
                               formData['jenis'] = value;
@@ -230,12 +254,27 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           initialValue: formData['harga']?.toString() ?? '',
                           decoration: const InputDecoration(labelText: 'Harga'),
                           keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Harga tidak boleh kosong';
+                            }
+                            if (int.tryParse(value) == null) {
+                              return 'Masukkan angka yang valid';
+                            }
+                            return null;
+                          },
                           onSaved: (v) =>
                               formData['harga'] = int.tryParse(v ?? '0'),
                         ),
                         TextFormField(
                           initialValue: formData['bahan'] ?? '',
                           decoration: const InputDecoration(labelText: 'Bahan'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Bahan tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['bahan'] = v,
                         ),
                         TextFormField(
@@ -243,6 +282,12 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           decoration: const InputDecoration(
                             labelText: 'Deskripsi',
                           ),
+                           validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Deskripsi tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['deskripsi'] = v,
                         ),
                       ].map(
@@ -265,6 +310,16 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                 icon: const Icon(Icons.save),
                 label: const Text('Simpan'),
                 onPressed: () {
+                   if (document == null && pickedImageBytes == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Pilih gambar terlebih dahulu.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     if (pickedImageBytes != null) {

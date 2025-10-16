@@ -157,9 +157,36 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                       ),
                       const SizedBox(height: 16),
                       ...[
-                        TextFormField(initialValue: formData['judul'] ?? '', decoration: const InputDecoration(labelText: 'Judul'), onSaved: (v) => formData['judul'] = v),
-                        TextFormField(initialValue: formData['link'] ?? '', decoration: const InputDecoration(labelText: 'Link'), onSaved: (v) => formData['link'] = v),
-                        TextFormField(initialValue: formData['deskripsi'] ?? '', decoration: const InputDecoration(labelText: 'Deskripsi'), onSaved: (v) => formData['deskripsi'] = v),
+                        TextFormField(
+                            initialValue: formData['judul'] ?? '',
+                            decoration: const InputDecoration(labelText: 'Judul'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Judul tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                            onSaved: (v) => formData['judul'] = v),
+                        TextFormField(
+                            initialValue: formData['link'] ?? '',
+                            decoration: const InputDecoration(labelText: 'Link'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Link tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                            onSaved: (v) => formData['link'] = v),
+                        TextFormField(
+                            initialValue: formData['deskripsi'] ?? '',
+                            decoration: const InputDecoration(labelText: 'Deskripsi'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Deskripsi tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                            onSaved: (v) => formData['deskripsi'] = v),
                       ].map((widget) => Padding(padding: const EdgeInsets.symmetric(vertical: 8.0), child: widget)),
                     ],
                   ),
@@ -172,12 +199,22 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                 icon: const Icon(Icons.save),
                 label: const Text('Simpan'),
                 onPressed: () {
+                  if (document == null && pickedImageBytes == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Pilih gambar terlebih dahulu.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     if (pickedImageBytes != null) {
                       formData['image'] = base64Encode(pickedImageBytes!);
                     }
-                    
+
                     if (document == null) {
                       FirebaseFirestore.instance.collection('berita').add(formData);
                     } else {

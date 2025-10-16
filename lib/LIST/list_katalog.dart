@@ -196,11 +196,23 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                         TextFormField(
                           initialValue: formData['nama'] ?? '',
                           decoration: const InputDecoration(labelText: 'Nama'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Nama tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['nama'] = v,
                         ),
                         TextFormField(
                           initialValue: formData['link'] ?? '',
                           decoration: const InputDecoration(labelText: 'Link'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Link tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['link'] = v,
                         ),
                         TextFormField(
@@ -208,13 +220,27 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           decoration: const InputDecoration(
                             labelText: 'Kategori',
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Kategori tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['kategori'] = v,
                         ),
                         TextFormField(
                           initialValue: formData['harga'] ?? '',
-                          decoration: const InputDecoration(labelText: 'Harga',
-                          ),
+                          decoration: const InputDecoration(labelText: 'Harga'),
                           keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Harga tidak boleh kosong';
+                            }
+                            if (int.tryParse(value) == null) {
+                              return 'Masukkan angka yang valid';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['harga'] = v,
                         ),
                         TextFormField(
@@ -222,6 +248,12 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                           decoration: const InputDecoration(
                             labelText: 'Deskripsi',
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Deskripsi tidak boleh kosong';
+                            }
+                            return null;
+                          },
                           onSaved: (v) => formData['deskripsi'] = v,
                         ),
                       ].map(
@@ -244,6 +276,16 @@ void _showAddEditDialog(BuildContext context, {DocumentSnapshot? document}) {
                 icon: const Icon(Icons.save),
                 label: const Text('Simpan'),
                 onPressed: () {
+                   if (document == null && pickedImageBytes == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Pilih gambar terlebih dahulu.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     if (pickedImageBytes != null) {
